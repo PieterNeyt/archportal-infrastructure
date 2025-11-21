@@ -1,0 +1,5 @@
+/.idea/
+/idp_mysql_data/
+/postgresql/
+/rabbitmq/
+/redis/
