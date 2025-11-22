@@ -81,11 +81,11 @@ services:
 
   # Platform Backend
   platform_backend:
-    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/archportal/archportalbackend/backend # TODO: replace with platform backend image
-#    depends_on:
-#      - app_postgres
-#      - app_rabbitmq
-#      - boardgame_redis
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/archportal/archportalbackend/backend:latest
+    depends_on:
+      - app_postgres
+      - app_rabbitmq
+      - boardgame_redis
     networks:
       - backend
     ports:
@@ -95,13 +95,13 @@ services:
 
   # Platform Frontend
   platform_frontend:
-    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/archportal/archportalfrontend/frontend # TODO: replace with platform frontend image
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/archportal/archportalfrontend/frontend:latest
     ports:
       - '3000:80'
     networks:
       - backend
-#    depends_on:
-#      - platform_backend
+    depends_on:
+      - platform_backend
 
   # TicTacToe Backend
   tictactoe_backend:
