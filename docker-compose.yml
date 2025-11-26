@@ -20,18 +20,20 @@ services:
       - ./postgresql/data:/var/lib/postgresql
       - ./init-scripts/sql:/docker-entrypoint-initdb.d/
 
-#  game_postgres:
-#    image: postgres:17.1-alpine
-#    restart: always
-#    environment:
-#      POSTGRES_USER: user
-#      POSTGRES_PASSWORD: password
-#      POSTGRES_DB: ttt
-#    volumes:
-#      - ./postgres/data:/var/lib/postgresql/data
-#      - ./init-scripts/game_sql:/docker-entrypoint-initdb.d/
-#    ports:
-#      - "5444:5432"
+  game_postgres:
+    image: postgres:17.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ttt
+    networks:
+      - backend
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./init-scripts/game_sql:/docker-entrypoint-initdb.d/
+    ports:
+      - "5444:5432"
 
   # RabbitMQ
   app_rabbitmq:
@@ -120,10 +122,16 @@ services:
   tictactoe_backend:
     image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/games/tik-tak-toe/ttt-backend/backend:latest
     depends_on:
+      - game_postgres
       - boardgame_redis
       - app_rabbitmq
     networks:
       - backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://game_postgres:5432/ttt
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   # TicTacToe Frontend
   tictactoe_frontend:
