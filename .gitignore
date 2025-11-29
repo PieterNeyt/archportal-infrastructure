@@ -3,4 +3,6 @@
 /postgresql/
 /rabbitmq/
 /redis/
-/data/
+/frontend/
+/letsencrypt/
+/data/logs/
