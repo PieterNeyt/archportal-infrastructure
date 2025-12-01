@@ -107,6 +107,8 @@ services:
       - '8080:8080'
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_MAIL_PASSWORD: roec zbxc douq fjdl
+      SPRING_MAIL_USERNAME: archportalplatform@gmail.com
 
   # Platform Frontend
   platform-frontend:
