@@ -19,19 +19,19 @@ services:
       - ./init-scripts/sql:/docker-entrypoint-initdb.d/
 
   # RabbitMQ
-  # app-rabbitmq:
-  #   image: rabbitmq:3.13.7-management-alpine
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: 'user'
-  #     RABBITMQ_DEFAULT_PASS: 'password'
-  #   ports:
-  #     - '5672:5672'   # AMQP
-  #     - '15672:15672' # Management UI
-  #   networks:
-  #     - backend
-  #   volumes:
-  #     - ./rabbitmq/data:/var/lib/rabbitmq
-  #     - ./rabbitmq/log:/var/log/rabbitmq
+  app-rabbitmq:
+    image: rabbitmq:3.13.7-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: 'user'
+      RABBITMQ_DEFAULT_PASS: 'password'
+    ports:
+      - '5672:5672'   # AMQP
+      - '15672:15672' # Management UI
+    networks:
+      - backend
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/log:/var/log/rabbitmq
 
   # Keycloak MySQL DB
   idp-mysql:
@@ -63,13 +63,18 @@ services:
       KC_HOSTNAME: 'localhost'
       KC_HTTP_RELATIVE_PATH: '/auth'
       KC_HOSTNAME_DEBUG: 'true'
-    command: start-dev
+    command: 
+      - start-dev
+      - --import-realm
     ports:
       - '8180:8080'
     depends_on:
       - idp-mysql
     networks:
       - backend
+    volumes:
+      - ./keycloak/ArchPortal-export:/opt/keycloak/data/import
+
 
   # Redis (Boardgame cache & session store)
   # boardgame-redis:
