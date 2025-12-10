@@ -6,3 +6,4 @@
 /frontend/
 /letsencrypt/
 /data/logs/
+/data/database.sqlite
