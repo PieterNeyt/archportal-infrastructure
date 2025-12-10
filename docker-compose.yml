@@ -1,6 +1,22 @@
 name: archPortal
 
 services:
+
+  checkers-postgres:
+    image: postgres:17.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: checkersDb
+    volumes:
+      - ./postgres/checkers-data:/var/lib/postgresql/data
+      - ./init-scripts/sql:/docker-entrypoint-initdb.d/
+    ports:
+      - "5445:5432"
+    networks:
+      - backend
+
   # PostgreSQL database
   app-postgres:
     image: postgres:17.6-alpine
@@ -63,7 +79,7 @@ services:
       KC_HOSTNAME: 'localhost'
       KC_HTTP_RELATIVE_PATH: '/auth'
       KC_HOSTNAME_DEBUG: 'true'
-    command: 
+    command:
       - start-dev
       - --import-realm
     ports:
@@ -149,23 +165,35 @@ services:
       - tictactoe-backend
 
   # # Checkers Backend
-  # checkers-backend:
-  #   image: alpine:3.20 # TODO: replace with checkers backend image
-  #   depends_on:
-  #     - boardgame_redis
-  #     - app_rabbitmq
-  #   networks:
-  #     - backend
+  checkers-backend:
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/games/checkers/checkers-backend/backend:latest
+    restart: always
+    depends_on:
+      - checkers-postgres
+      - app-rabbitmq
+    networks:
+      - backend
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://checkers-postgres:5432/checkersDb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: prod
+
+
 
   # # Checkers Frontend
-  # checkers-frontend:
-  #   image: nginx:stable-alpine # TODO: replace with checkers frontend image
-  #   ports:
-  #     - '3002:80'
-  #   networks:
-  #     - backend
-  #   depends_on:
-  #     - checkers_backend
+  checkers-frontend:
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/games/checkers/checkers-frontend/frontend:latest
+    restart: always
+    depends_on:
+      - checkers-backend
+    networks:
+      - backend
+
+
 
   # # Anti Corruption Layer
   # anticorruptionlayer:
