@@ -198,6 +198,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: prod
+      LAUNCHER_API_URL: http://archportal-platform-backend-1:8080
 
 
 
