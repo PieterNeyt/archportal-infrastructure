@@ -145,6 +145,8 @@ services:
       - /app/node_modules
     networks:
       - backend
+    environment:
+      VITE_KC_URL: http://localhost/auth
 
   # TicTacToe Backend
   tictactoe-backend:
