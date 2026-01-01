@@ -7,3 +7,4 @@
 /letsencrypt/
 /data/logs/
 /data/database.sqlite
+/ollama_data/

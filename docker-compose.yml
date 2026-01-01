@@ -308,6 +308,44 @@ services:
       - ./postgresql/data:/var/lib/postgresql
       - ./init-scripts/sql:/docker-entrypoint-initdb.d
 
+  chatbot-db:
+    image: postgres:15
+    container_name: ai_chatbot_db
+    restart: always
+    environment:
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: aipassword
+      POSTGRES_DB: aichatbot
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./postgres/chatbot:/var/lib/postgresql/data
+      - ./init-scripts/sql/chatbot-init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+  chatbot-ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+
+  chatbot-fastapi:
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team3/ai-chatbot:latest
+    container_name: ai_chatbot_service
+    restart: always
+    depends_on:
+      - chatbot-db
+      - chatbot-ollama
+    environment:
+      DATABASE_URL: postgresql+psycopg2://aiuser:aipassword@chatbot-db:5432/aichatbot
+      OLLAMA_BASE_URL: http://ollama:11434
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "3335:8000"
+
 networks:
   kdg-backend:
     name: kdg-back-network
