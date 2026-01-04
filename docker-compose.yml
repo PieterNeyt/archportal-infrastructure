@@ -136,6 +136,13 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: user
       SPRING_RABBITMQ_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_SQL_INIT_MODE: always
+      SPRING_FLYWAY_ENABLED: false
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: true
+      CHATBOT_API_URL: http://ai-chatbot-service:8000/chat/stream
+      AI_API_KEY: ${AI_API_KEY}
+      MODEL_PROVIDER: gemini
 
   # Platform Frontend
   platform-frontend:
@@ -321,6 +328,8 @@ services:
     volumes:
       - ./postgres/chatbot:/var/lib/postgresql/data
       - ./init-scripts/sql/chatbot-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
 
 
   chatbot-ollama:
@@ -331,10 +340,12 @@ services:
       - "11434:11434"
     volumes:
       - ./ollama_data:/root/.ollama
+    networks:
+      - backend
 
   chatbot-fastapi:
     image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team3/ai-chatbot:latest
-    container_name: ai_chatbot_service
+    container_name: ai-chatbot-service
     restart: always
     depends_on:
       - chatbot-db
@@ -345,6 +356,8 @@ services:
       GEMINI_API_KEY: ${GEMINI_API_KEY}
     ports:
       - "3335:8000"
+    networks:
+      - backend
 
 networks:
   kdg-backend:
