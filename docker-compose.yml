@@ -212,6 +212,7 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       LAUNCHER_API_URL: http://archportal-platform-backend-1:8080
       AI_SERVICE_API_KEY: ${AI_API_KEY}
+      AI_SERVICE_URL: http://archportal-tictactoe-ai-1:8000/ai-player/move
 
 
 
@@ -228,15 +229,19 @@ services:
 
 
 
-  # # Anti Corruption Layer
-  # anticorruptionlayer:
-  #   image: alpine:3.20 # TODO: replace with ACL image
-  #   networks:
-  #     - backend
-  #   depends_on:
-  #     - platform_backend
-  #     - tictactoe_backend
-  #     - checkers_backend
+  anticorruptionlayer:
+    image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/archportal/archycorruptionlayer/acl:latest
+    networks:
+      - backend
+    ports:
+      - '49512:8087'
+    depends_on:
+      - app-rabbitmq
+    environment:
+      SPRING_RABBITMQ_HOST: app-rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: password
 
   nginx:
     image: 'jc21/nginx-proxy-manager:latest'
