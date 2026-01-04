@@ -213,7 +213,10 @@ services:
       LAUNCHER_API_URL: http://archportal-platform-backend-1:8080
       AI_SERVICE_API_KEY: ${AI_API_KEY}
       AI_SERVICE_URL: http://archportal-tictactoe-ai-1:8000/ai-player/move
-
+      SPRING_RABBITMQ_HOST: archportal-app-rabbitmq-1
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: password
 
 
   # # Checkers Frontend
