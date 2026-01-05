@@ -175,7 +175,7 @@ services:
       SPRING_RABBITMQ_USERNAME: user
       SPRING_RABBITMQ_PASSWORD: password
       AI_SERVICE_API_KEY: ${AI_API_KEY}
-
+      GAME_GAMEURL: http://localhost/ttt/
   # TicTacToe Frontend
   tictactoe-frontend:
     image: registry.gitlab.com/kdg-ti/integratieproject-j3/teams-25-26/team15/games/tik-tak-toe/ttt-frontend/frontend:latest
